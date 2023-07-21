@@ -10,5 +10,6 @@ Casos Especificos:
 
 *- Para migracciones la primera vez: python manage.py makemigrations
 *.- Cuando se alade un campo o tipo de datos: python manage.py migrate
+*.- Para actualizar el repo: git pull origin main
 
 

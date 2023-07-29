@@ -27,43 +27,38 @@
         <!-- Masthead-->
         <header class="masthead bg-primary text-white text-center">
             <div class="container d-flex align-items-center flex-column">
-                <form method="POST">
-                    <h3>Carrera</h3>
-                    <select name="carrera">
-                        {% for carrera in carreras %}
-                            <option value="{{ carrera.idnumber }}">{{ carrera.name }}</option>
-                        {% endfor %}
-                    </select>                        
-                    <h3>Curso</h3>
-                    <select name="curso">
-                        {% for curso in cursos %}
-                        <option value="{{ curso.id }}">{{ curso.name }}</option>
-                    {% endfor %}                    </select>
-                    <br>
-                    <h3>Materia</h3>
-                    <select name="materia">
-                        {% for materia in materias %}
-                        <option value="{{ materia.id }}">{{ materia.fullname }}</option>
-                    {% endfor %}                    </select>
-                    <br>
-                    <h3>Alumno</h3>
-                    <select name="alumno">
-                        {% for alumno in alumnos %}
-                        <option value="{{ alumno.id }}">{{ alumno.firstname }} - {{ alumno.lastname }}</option>
-                    {% endfor %}                    </select>
-
-                    <br>
-                    <h3>Actividad</h3>
-                    <select name="tipo" id="tipo">
-                        <option value="">-- Seleccione --</option>
-                        <option value="alumno1">Foro</option>
-                        <option value="alumno2">Chatt</option>
-                    </select>
-                    <br/>
-                    <br/>
-                    <input type="submit" value="Barra" id="bar-button">
-                    <input type="submit" value="Pastel" id="pie-button">
-                    <input type="submit" value="Apilada" id="line-button">
+                <select name="carrera" id="carrera">
+                    {% for carrera in carreras %}
+                        <option value="{{ carrera.id }}">{{ carrera.name }}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <h3>Curso</h3>
+                <select name="curso" id="curso">
+                    {{ options_html|safe }}
+                </select>
+                <br>
+                <h3>Materia</h3>
+                <select name="materia" id="materia">
+                    {{ materia_options_html|safe }}
+                </select>
+                <br>
+                <h3>Estudiante</h3>
+                <select name="estudiante" id="estudiante">
+                    {{ estudiante_options_html|safe }}
+                </select>
+                <br>
+                <h3>Actividad</h3>
+                <select name="tipo" id="tipo" onchange="mostrarBotones()">
+                    <option value="tipo0">Ninguno</option>
+                    <option value="tipo1">Foro</option>
+                   <option value="tipo2">Chatt</option>
+                </select>
+                <br/>
+                <br/>
+                    <input type="submit" value="Barra" id="bar-button" style="display: none;">
+                    <input type="submit" value="Pastel" id="pie-button" style="display: none;">
+                    <input type="submit" value="Apilada" id="line-button" style="display: none;">
                 </form>
             </div>
         </header>       
@@ -78,6 +73,26 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <!-- Event Button Bar-->
         <script>
+            function mostrarBotones() {
+                var tipo = document.getElementById("tipo").value;
+                var barButton = document.getElementById("bar-button");
+                var pieButton = document.getElementById("pie-button");
+                var lineButton = document.getElementById("line-button");
+              
+                if (tipo === "tipo1") {
+                  barButton.style.display = "inline-block";
+                  pieButton.style.display = "inline-block";
+                  lineButton.style.display = "none";
+                } else if (tipo === "tipo2") {
+                  barButton.style.display = "none";
+                  pieButton.style.display = "none";
+                  lineButton.style.display = "inline-block";
+                } else {
+                  barButton.style.display = "none";
+                  pieButton.style.display = "none";
+                  lineButton.style.display = "none";
+                }
+              }
             const submitButtonb = document.getElementById('bar-button');
             submitButtonb.addEventListener('click', (event) => {
               event.preventDefault(); // evitar el comportamiento de envío predeterminado del formulario
@@ -95,23 +110,87 @@
             });
         </script> 
         <script>
-            $(document).ready(function() {
-                console.log($('#carrera'));
-                $('#carrera').change(function() {
-                    var carrera_id = $(this).val();
-                    console.log(carrera_id);
-                    $.ajax({
-                        url: '/get_cursos/',    // URL de la vista que devuelve los cursos
-                        type: 'GET',
-                        data: {
-                            'carrera_id': carrera_id
-                        },
-                        success: function(data) {
-                            $('#curso').html(data);
-                        }
+            // Obtener los elementos del DOM
+            const carreraSelect = document.getElementById('carrera');
+            const cursoSelect = document.getElementById('curso');
+            const materiaSelect = document.getElementById('materia');
+            const estudianteSelect = document.getElementById('estudiante');
+            
+            // Manejar el evento de cambio en el select de carrera
+            carreraSelect.addEventListener('change', () => {
+                // Obtener el valor seleccionado en el select de carrera
+                const carreraId = carreraSelect.value;
+                        
+                // Desactivar el select de curso mientras se cargan los datos
+                cursoSelect.disabled = true;
+                materiaSelect.disabled = true;
+                estudianteSelect.disabled = true;
+                // Obtener los cursos de la carrera seleccionada utilizando AJAX
+                fetch(`?carrera=${carreraId}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        // Actualizar el select de curso con las opciones correspondientes
+                        cursoSelect.innerHTML = data;
+                        // Activar el select de curso si hay opciones disponibles
+                        cursoSelect.disabled = cursoSelect.options.length <= 1;
+                        // Desactivar el select de materia
+                        materiaSelect.disabled = true;
                     });
+
+            // Manejar el evento de cambio en el select de curso
+            cursoSelect.addEventListener('change', () => {
+                // Obtener el valor seleccionado en el select de curso
+                const cursoId = cursoSelect.value;
+
+                // Desactivar el select de materia mientras se cargan los datos
+                materiaSelect.disabled = true;
+
+                // Obtener las materias del curso seleccionado utilizando AJAX
+                fetch(`?curso=${encodeURIComponent(cursoId)}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        // Actualizar el select de materia con las opciones correspondientes
+                        materiaSelect.innerHTML = data;
+                        // Activar el select de materia si hay opciones disponibles
+                        materiaSelect.disabled = materiaSelect.options.length <= 1;
+                    });                    
                 });
+
+            // Manejar el evento de cambio en el select de estudiante
+            materiaSelect.addEventListener('change', () => {
+                // Obtener el valor seleccionado en el select de estudiante
+
+                const materiaId = materiaSelect.value;
+                // Desactivar el select de estudiantes mientras se cargan los datos
+                estudianteSelect.disabled = true;
+
+                // Obtener los estudiantes del curso seleccionado utilizando AJAX
+                fetch(`?materia=${encodeURIComponent(materiaId)}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        // Actualizar el select de estudiante con las opciones correspondientes
+                        estudianteSelect.innerHTML = data;
+                        // Activar el select de estudiante si hay opciones disponibles
+                        estudianteSelect.disabled = estudianteSelect.options.length <= 1;
+                    });                    
+                });
+
+            // Manejar el evento de cambio en el select de estudiante
+            estudianteSelect.addEventListener('change', () => {
+                // Obtener el valor seleccionado en el select de estudiante
+
+                const estudianteId = estudianteSelect.value;
+                // Desactivar el select de estudiantes mientras se cargan los datos
+                estudianteSelect.disabled = true;
+
+                // Obtener los estudiantes del curso seleccionado utilizando AJAX
+                fetch(`/bar?estudiante=${encodeURIComponent(estudianteId)}`)
+                });                
+
             });
-        </script>               
+       </script>
     </body>
 </html>
+
+
+

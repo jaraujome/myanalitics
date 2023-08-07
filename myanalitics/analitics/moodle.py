@@ -140,7 +140,7 @@ class Mdlm9CourseModules(models.Model):
 
 
 class Mdlm9CourseModulesCompletion(models.Model):
-    id = models.BigIntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     coursemoduleid = models.BigIntegerField()
     userid = models.BigIntegerField()
     completionstate = models.IntegerField()
@@ -155,7 +155,7 @@ class Mdlm9CourseModulesCompletion(models.Model):
 
 
 class Mdlm9Enrol(models.Model):
-    id = models.BigIntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     enrol = models.CharField(max_length=20)
     status = models.BigIntegerField()
     courseid = models.BigIntegerField()
@@ -342,7 +342,7 @@ class Mdlm9RoleAssignments(models.Model):
 
 
 class Mdlm9User(models.Model):
-    id = models.BigIntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     auth = models.CharField(max_length=20)
     confirmed = models.IntegerField()
     policyagreed = models.IntegerField()
@@ -400,8 +400,8 @@ class Mdlm9User(models.Model):
 class Mdlm9UserEnrolments(models.Model):
     id = models.BigIntegerField(primary_key=True)
     status = models.BigIntegerField()
-    enrolid = models.BigIntegerField()
-    userid = models.BigIntegerField()
+    enrolid = models.ForeignKey(Mdlm9Enrol, on_delete=models.CASCADE, related_name='enrol_enrolments')
+    userid = models.ForeignKey(Mdlm9User, on_delete=models.CASCADE, related_name='user_enrolments')
     timestart = models.BigIntegerField()
     timeend = models.BigIntegerField()
     modifierid = models.BigIntegerField()

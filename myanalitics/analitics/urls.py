@@ -4,9 +4,9 @@ from . import views
 
 urlpatterns = [
     path('', views.index),
-    path('bar/', views.bar),
-    path('pie/', views.pie),
-    path('apilada/', views.line),
+    path('bar/', views.bar, name='bar'),
+    path('pie/', views.pie, name='pie'),
+    path('apilada/', views.line, name='apilada'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

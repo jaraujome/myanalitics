@@ -64,9 +64,9 @@
                 <div class="row">
                     <!-- Footer Algoritmo Bayesiano-->
                     <div class="col-lg-6 mb-5 mb-lg-0">
-                        <h4 class="text-uppercase mb-4">Algoritmo Bayesiano</h4>
-                        <p class="lead mb-0">
-                            Es un algoritmo rápido y escalable que calcula las probabilidades condicionales para las combinaciones de atributos y el atributo de objetivo. A partir de los datos de entrenamiento se establece una probabilidad independiente.
+                        <h4 class="text-uppercase mb-4">Modelo de Analisis de Sentimientos</h4>
+                        <p class="lead mb-0 text-center">
+                            {{ sentimiento_mayor }}
                         </p>
                     </div>
                     <!-- Footer Machine Learnig-->
@@ -91,7 +91,7 @@
                     type: 'bar'
                 },
                 title: {
-                    text: 'USO DE LOS CHATS DE FORMA INDIVIDUAL',
+                    text: 'USO DE LOS FOROS DEL ESTUDIANTE ' + '{{ name_stud }}',
                     align: 'center'
                 },
                 subtitle: {
@@ -100,7 +100,7 @@
                 },
 
                 xAxis: {
-                    categories: ['Enviados','Otros']
+                    categories: ['Estudiante','El resto de estudiantes']
                 },
                 yAxis: {
                     min: 0,
@@ -119,9 +119,13 @@
                         }
                     }
                 },
+                
                 series: [{
-                    name: '{{ chattusu.0.userid }}',
-                    data: [ {{ chattenviado }}, {{chattenvcrest}}]
+                    name: 'Estudiante',
+                    data: [{{  chattusu }}]
+                }, {
+                    name: 'El resto de estudiantes',
+                    data: [{{ chattenviado }}]
                 }]
             });      
             Highcharts.chart('containeralgorit', {
@@ -129,15 +133,15 @@
                     type: 'bar'
                 },
                 title: {
-                    text: 'Chatt',
+                    text: 'SENTIMIENTOS EN EL USO DEL CHATT',
                     align: 'left'
                 },
                 subtitle: {
-                    text: 'Estudiante',
+                    text: '{{ name_stud }}',
                     align: 'left'
                 },
                 xAxis: {
-                    categories: ['Nebsajes'],
+                    categories: ['Sentimientos'],
                     title: {
                         text: null
                     },
@@ -147,7 +151,7 @@
                 yAxis: {
                     min: 0,
                     title: {
-                        text: 'Population (millions)',
+                        text: 'Cantidad de Sentimiento',
                         align: 'high'
                     },
                     labels: {
@@ -156,7 +160,7 @@
                     gridLineWidth: 0
                 },
                 tooltip: {
-                    valueSuffix: ' millions'
+                    valueSuffix: ' sentimientos'
                 },
                 plotOptions: {
                     bar: {
@@ -183,13 +187,16 @@
                     enabled: false
                 },
                 series: [{
-                    name: 'Enviados',
-                    data: [631]
+                    name: 'NEGATIVOS',
+                    data: [{{ negativos }}]
                 }, {
-                    name: 'Total',
-                    data: [814]
+                    name: 'NEUTRALES',
+                    data: [{{ neutrales }}]
+                }, {
+                    name: 'POSITIVOS',
+                    data: [{{ positivos }}]
                 }],
-            });                 
+            });                         
         </script/>
     </body>
 </html>

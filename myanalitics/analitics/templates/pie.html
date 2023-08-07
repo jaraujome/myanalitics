@@ -64,9 +64,9 @@
                 <div class="row">
                     <!-- Footer Algoritmo Bayesiano-->
                     <div class="col-lg-6 mb-5 mb-lg-0">
-                        <h4 class="text-uppercase mb-4">Algoritmo Bayesiano</h4>
-                        <p class="lead mb-0">
-                            Es un algoritmo rápido y escalable que calcula las probabilidades condicionales para las combinaciones de atributos y el atributo de objetivo. A partir de los datos de entrenamiento se establece una probabilidad independiente.
+                        <h4 class="text-uppercase mb-4">Modelo de Analisis de Sentimientos</h4>
+                        <p class="lead mb-0 text-center">
+                            {{ sentimiento_mayor }}
                         </p>
                     </div>
                     <!-- Footer Machine Learnig-->
@@ -93,8 +93,8 @@
                     plotShadow: false
                 },
                 title: {
-                    text: 'USO DE LOS FOROS DE FORMA INDIVIDUAL',
-                    align: 'center',
+                    text: 'USO DE LOS FOROS DEL ESTUDIANTE ' + '{{ name_stud }}',
+                    align: 'center'
                 },
                 subtitle: {
                     text:'Número de discusiones',
@@ -126,16 +126,18 @@
                 },
                 series: [{
                     type: 'pie',
-                    name: 'Browser share',
+                    name: 'Discusiones',
                     innerSize: '50%',
                     data: [
                         {
-                            name: '{{ forodiscus.0.userid }}',
-                            y: {{ forodiscmes }},
+                            name: 'Estudiante',
+                            y: {{  forodiscus }},
+                            color: '#0000FF' 
                         },
                         {
-                            name: 'Otros',
-                            y: {{ forodiscrest }},
+                            name: 'El resto de estudiantes',
+                            y: {{ forodiscmes }},
+                            color: '#FFA500' 
                         }
                     ]
                 }]
@@ -145,15 +147,15 @@
                     type: 'bar'
                 },
                 title: {
-                    text: 'FORO',
+                    text: 'SENTIMIENTOS EN EL USO DE LOS TEMAS POR FOROS',
                     align: 'left'
                 },
                 subtitle: {
-                    text: 'Estudiante',
+                    text: '{{ name_stud }}',
                     align: 'left'
                 },
                 xAxis: {
-                    categories: ['Mensajes'],
+                    categories: ['Sentimientos'],
                     title: {
                         text: null
                     },
@@ -163,7 +165,7 @@
                 yAxis: {
                     min: 0,
                     title: {
-                        text: 'Population (millions)',
+                        text: 'Cantidad de Sentimiento',
                         align: 'high'
                     },
                     labels: {
@@ -172,7 +174,7 @@
                     gridLineWidth: 0
                 },
                 tooltip: {
-                    valueSuffix: ' millions'
+                    valueSuffix: ' sentimientos'
                 },
                 plotOptions: {
                     bar: {
@@ -199,11 +201,14 @@
                     enabled: false
                 },
                 series: [{
-                    name: 'Enviados',
-                    data: [631]
+                    name: 'NEGATIVOS',
+                    data: [{{ negativos }}]
                 }, {
-                    name: 'Total',
-                    data: [814]
+                    name: 'NEUTRALES',
+                    data: [{{ neutrales }}]
+                }, {
+                    name: 'POSITIVOS',
+                    data: [{{ positivos }}]
                 }],
             });                
         </script/>

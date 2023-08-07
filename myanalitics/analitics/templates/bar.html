@@ -65,9 +65,9 @@
                 <div class="row">
                     <!-- Footer Algoritmo Bayesiano-->
                     <div class="col-lg-6 mb-5 mb-lg-0">
-                        <h4 class="text-uppercase mb-4">Algoritmo Bayesiano</h4>
-                        <p class="lead mb-0">
-                            Es un algoritmo rápido y escalable que calcula las probabilidades condicionales para las combinaciones de atributos y el atributo de objetivo. A partir de los datos de entrenamiento se establece una probabilidad independiente.
+                        <h4 class="text-uppercase mb-4">Modelo de Analisis de Sentimientos</h4>
+                        <p class="lead mb-0 text-center">
+                            {{ sentimiento_mayor }}
                         </p>
                     </div>
                     <!-- Footer Machine Learnig-->
@@ -92,30 +92,29 @@
                     type: 'column'
                 },
                 title: {
-                    text: 'USO DE LOS FOROS DE FORMA INDIVIDUAL',
+                    text: 'USO DE LOS FOROS DEL ESTUDIANTE ' + '{{ name_stud }}',
                     align: 'center'
                 },
                 subtitle: {
                     text:
-                        'Número de temas enviados - ' +
                         'Número de mensajes enviados',
                     align: 'center'
                 },
                 xAxis: {
-                    categories:  [{{ forointerus.0.userid }}],
+                    categories:  ['Enviados'],
                     crosshair: true,
                     accessibility: {
-                        description: 'Alumnos'
+                        description: 'Estudiantes'
                     }
                 },
                 yAxis: {
                     min: 0,
                     title: {
-                        text: 'Cantidad (Núm)'
+                        text: 'mensajes'
                     }
                 },
                 tooltip: {
-                    valueSuffix: ' (1000 Núm)'
+                    valueSuffix: ' Mensajes'
                 },
                 plotOptions: {
                     column: {
@@ -125,11 +124,11 @@
                 },
                 series: [
                     {
-                        name: 'Temas enviados',
+                        name: 'Estudiante',
                         data: [{{ forointersub }}]
                     },
                     {
-                        name: 'Mensajes enviados',
+                        name: 'Los demas estudiantes',
                         data: [{{ forointermes }}]
                     }
                 ]
@@ -139,15 +138,15 @@
                     type: 'bar'
                 },
                 title: {
-                    text: 'FOROS',
+                    text: 'SENTIMIENTOS EN EL USO DE LOS FOROS GENERALES',
                     align: 'left'
                 },
                 subtitle: {
-                    text: 'Estudiante',
+                    text: '{{ name_stud }}',
                     align: 'left'
                 },
                 xAxis: {
-                    categories: ['Mensajes'],
+                    categories: ['Sentimientos'],
                     title: {
                         text: null
                     },
@@ -157,7 +156,7 @@
                 yAxis: {
                     min: 0,
                     title: {
-                        text: 'Population (millions)',
+                        text: 'Cantidad de Sentimiento',
                         align: 'high'
                     },
                     labels: {
@@ -166,7 +165,7 @@
                     gridLineWidth: 0
                 },
                 tooltip: {
-                    valueSuffix: ' millions'
+                    valueSuffix: ' sentimientos'
                 },
                 plotOptions: {
                     bar: {
@@ -193,11 +192,14 @@
                     enabled: false
                 },
                 series: [{
-                    name: 'Enviados',
-                    data: [631]
+                    name: 'NEGATIVOS',
+                    data: [{{ negativos }}]
                 }, {
-                    name: 'Total',
-                    data: [814]
+                    name: 'NEUTRALES',
+                    data: [{{ neutrales }}]
+                }, {
+                    name: 'POSITIVOS',
+                    data: [{{ positivos }}]
                 }],
             });
         </script/>

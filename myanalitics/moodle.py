@@ -152,10 +152,10 @@ class Mdlm9CourseModulesCompletion(models.Model):
 
 
 class Mdlm9Enrol(models.Model):
-    id = models.BigIntegerField()
+    id = models.IntegerField(primary_key=True)
     enrol = models.CharField(max_length=20)
     status = models.BigIntegerField()
-    courseid = models.BigIntegerField()
+    courseid = models.IntegerField()
     sortorder = models.BigIntegerField()
     name = models.CharField(max_length=255, blank=True, null=True)
     enrolperiod = models.BigIntegerField(blank=True, null=True)
@@ -339,7 +339,7 @@ class Mdlm9RoleAssignments(models.Model):
 
 
 class Mdlm9User(models.Model):
-    id = models.BigIntegerField()
+    id = models.IntegerField(primary_key=True)
     auth = models.CharField(max_length=20)
     confirmed = models.IntegerField()
     policyagreed = models.IntegerField()
@@ -397,8 +397,8 @@ class Mdlm9User(models.Model):
 class Mdlm9UserEnrolments(models.Model):
     id = models.BigIntegerField()
     status = models.BigIntegerField()
-    enrolid = models.BigIntegerField()
-    userid = models.BigIntegerField()
+    enrolid = models.ForeignKey(Mdlm9Enrol, on_delete=models.CASCADE, related_name='enrolments')
+    userid = models.ForeignKey(Mdlm9User, on_delete=models.CASCADE, related_name='user_enrolments')
     timestart = models.BigIntegerField()
     timeend = models.BigIntegerField()
     modifierid = models.BigIntegerField()
@@ -409,3 +409,4 @@ class Mdlm9UserEnrolments(models.Model):
         managed = False
         db_table = 'mdlm9_user_enrolments'
         db_table_comment = 'Users participating in courses (aka enrolled users) - everyb'
+    

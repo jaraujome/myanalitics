@@ -27,15 +27,21 @@
         <!-- Masthead-->
         <header class="masthead bg-primary text-white text-center">
             <div class="container d-flex align-items-center flex-column">
-                <select name="carrera" id="carrera">
-                    {% for carrera in carreras %}
-                        <option value="{{ carrera.id }}">{{ carrera.name }}</option>
+                <h3>Facultad</h3>
+                <select name="facultad" id="facultad">
+                    {% for facultad in facultads %}
+                        <option value="{{ facultad.id }}">{{ facultad.name }}</option>
                     {% endfor %}
                 </select>
                 <br>
+                <h3>Carrera</h3>
+                <select name="carrera" id="carrera">
+                    {{ carrera_options_html|safe }}
+                </select>
+                <br>                
                 <h3>Curso</h3>
                 <select name="curso" id="curso">
-                    {{ options_html|safe }}
+                    {{ curso_options_html|safe }}
                 </select>
                 <br>
                 <h3>Materia</h3>
@@ -49,10 +55,8 @@
                 </select>
                 <br>
                 <h3>Actividad</h3>
-                <select name="tipo" id="tipo" onchange="mostrarBotones()">
-                    <option value="tipo0">Ninguno</option>
-                    <option value="tipo1">Foro</option>
-                   <option value="tipo2">Chatt</option>
+                <select name="actividad" id="actividad" onchange="mostrarBotones()">
+                    {{ actividad_options_html|safe }}
                 </select>
                 <br/>
                 <br/>
@@ -74,16 +78,16 @@
         <!-- Event Button Bar-->
         <script>
             function mostrarBotones() {
-                var tipo = document.getElementById("tipo").value;
+                var actividad = document.getElementById("actividad").value;
                 var barButton = document.getElementById("bar-button");
                 var pieButton = document.getElementById("pie-button");
                 var lineButton = document.getElementById("line-button");
-              
-                if (tipo === "tipo1") {
+
+                if (actividad == 0) {
                   barButton.style.display = "inline-block";
                   pieButton.style.display = "inline-block";
                   lineButton.style.display = "none";
-                } else if (tipo === "tipo2") {
+                } else if (actividad == 1 ) {
                   barButton.style.display = "none";
                   pieButton.style.display = "none";
                   lineButton.style.display = "inline-block";
@@ -94,37 +98,47 @@
                 }
               }
             const submitButtonb = document.getElementById('bar-button');
-            submitButtonb.addEventListener('click', (event) => {
-              event.preventDefault(); // evitar el comportamiento de envío predeterminado del formulario
-              window.location.href = '/bar'; // redirigir a la URL deseada
-            });
-            const submitButtonp = document.getElementById('pie-button');
-            submitButtonp.addEventListener('click', (event) => {
-              event.preventDefault(); // evitar el comportamiento de envío predeterminado del formulario
-              window.location.href = '/pie'; // redirigir a la URL deseada
-            });
-            const submitButtonl = document.getElementById('line-button');
-            submitButtonl.addEventListener('click', (event) => {
-              event.preventDefault(); // evitar el comportamiento de envío predeterminado del formulario
-              window.location.href = '/apilada'; // redirigir a la URL deseada
-            });
-        </script> 
-        <script>
+                
+
             // Obtener los elementos del DOM
+            const facultadSelect = document.getElementById('facultad');
             const carreraSelect = document.getElementById('carrera');
             const cursoSelect = document.getElementById('curso');
             const materiaSelect = document.getElementById('materia');
             const estudianteSelect = document.getElementById('estudiante');
-            
-            // Manejar el evento de cambio en el select de carrera
-            carreraSelect.addEventListener('change', () => {
+            const actividadSelect = document.getElementById('actividad');
+
+                // Manejar el evento de cambio en el select de facultad
+                facultadSelect.addEventListener('change', () => {
+                // Obtener el valor seleccionado en el select de facultad
+                const facultadId = facultadSelect.value;
+                        
+                // Obtener las carreras de la facultad seleccionada utilizando AJAX
+                    if (facultadId=='3095') {
+                        fetch(`?facultad=${facultadId}`)
+                        .then(response => response.text())
+                        .then(data => {
+                            // Actualizar el select de carrera con las opciones correspondientes
+                            carreraSelect.innerHTML = data;
+                            // Activar el select de carrera si hay opciones disponibles
+                            carreraSelect.disabled = carreraSelect.options.length <= 1;
+                            // Desactivar el select 
+                            cursoSelect.disabled = true;
+                            materiaSelect.disabled = true;
+                            estudianteSelect.disabled = true;
+                            actividadSelect.disabled = true;
+                        });
+
+                    }
+                });    
+
+                // Manejar el evento de cambio en el select de carrera
+                carreraSelect.addEventListener('change', () => {
                 // Obtener el valor seleccionado en el select de carrera
                 const carreraId = carreraSelect.value;
                         
                 // Desactivar el select de curso mientras se cargan los datos
                 cursoSelect.disabled = true;
-                materiaSelect.disabled = true;
-                estudianteSelect.disabled = true;
                 // Obtener los cursos de la carrera seleccionada utilizando AJAX
                 fetch(`?carrera=${carreraId}`)
                     .then(response => response.text())
@@ -136,9 +150,10 @@
                         // Desactivar el select de materia
                         materiaSelect.disabled = true;
                     });
+                });    
 
-            // Manejar el evento de cambio en el select de curso
-            cursoSelect.addEventListener('change', () => {
+                // Manejar el evento de cambio en el select de curso
+                cursoSelect.addEventListener('change', () => {
                 // Obtener el valor seleccionado en el select de curso
                 const cursoId = cursoSelect.value;
 
@@ -156,8 +171,8 @@
                     });                    
                 });
 
-            // Manejar el evento de cambio en el select de estudiante
-            materiaSelect.addEventListener('change', () => {
+                // Manejar el evento de cambio en el select de estudiante
+                materiaSelect.addEventListener('change', () => {
                 // Obtener el valor seleccionado en el select de estudiante
 
                 const materiaId = materiaSelect.value;
@@ -175,19 +190,58 @@
                     });                    
                 });
 
-            // Manejar el evento de cambio en el select de estudiante
-            estudianteSelect.addEventListener('change', () => {
+                // Manejar el evento de cambio en el select de estudiante
+                estudianteSelect.addEventListener('change', () => {
                 // Obtener el valor seleccionado en el select de estudiante
 
                 const estudianteId = estudianteSelect.value;
+
                 // Desactivar el select de estudiantes mientras se cargan los datos
-                estudianteSelect.disabled = true;
+                actividadSelect.disabled = true;
 
                 // Obtener los estudiantes del curso seleccionado utilizando AJAX
-                fetch(`/bar?estudiante=${encodeURIComponent(estudianteId)}`)
+                fetch(`?estudiante=${encodeURIComponent(estudianteId)}`)
+                .then(response => response.text())
+                    .then(data => {
+                        // Actualizar el select de estudiante con las opciones correspondientes
+
+                        actividadSelect.innerHTML = data;
+                        // Activar el select de estudiante si hay opciones disponibles
+                        actividadSelect.disabled = actividadSelect.options.length <= 1;
+                    }); 
                 });                
 
-            });
+                actividadSelect.addEventListener('change', () => {
+                    // Obtener el valor seleccionado en el select de estudiante
+                    const actividadId = actividadSelect.value;
+
+                    // Obtener los estudiantes del curso seleccionado utilizando AJAX
+                    fetch(`?actividad=${encodeURIComponent(actividadId)}`);                
+                
+                });
+
+            submitButtonb.addEventListener('click', (event) => {
+                event.preventDefault(); // evitar el comportamiento de envío predeterminado del formulario
+                const estudianteEst = estudianteSelect.value;
+                const cursoEst = materiaSelect.value;
+                window.location.href = `/bar?estudianteg=${encodeURIComponent(estudianteEst)}&cursog=${encodeURIComponent(cursoEst)}`; // redirigir a la URL deseada
+              });
+  
+              const submitButtonp = document.getElementById('pie-button');
+              submitButtonp.addEventListener('click', (event) => {
+                event.preventDefault(); // evitar el comportamiento de envío predeterminado del formulario
+                const estudianteEst = estudianteSelect.value;
+                const cursoEst = materiaSelect.value;
+                window.location.href = `/pie?estudianteg=${encodeURIComponent(estudianteEst)}&cursog=${encodeURIComponent(cursoEst)}`; // redirigir a la URL deseada
+              });
+  
+              const submitButtonl = document.getElementById('line-button');
+              submitButtonl.addEventListener('click', (event) => {
+                event.preventDefault(); // evitar el comportamiento de envío predeterminado del formulario
+                const estudianteEst = estudianteSelect.value;
+                const cursoEst = materiaSelect.value;
+                window.location.href = `/apilada?estudianteg=${encodeURIComponent(estudianteEst)}&cursog=${encodeURIComponent(cursoEst)}`; // redirigir a la URL deseada
+              });
        </script>
     </body>
 </html>
